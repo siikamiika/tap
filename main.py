@@ -201,6 +201,8 @@ def get_ordered_apartment_device_consumption(device_name, start_datetime, end_da
 db = populate_db()
 app = fastapi.FastAPI()
 
+# combined stats for all devices
+
 @app.get('/apartment_stats/{apartment_id}')
 async def query_apartment_stats(apartment_id, start, end):
     return get_apartment_stats(apartment_id, start, end)
@@ -208,6 +210,8 @@ async def query_apartment_stats(apartment_id, start, end):
 @app.get('/all_stats')
 async def query_all_stats(start, end):
     return get_apartment_stats('all', start, end)
+
+# stats per device
 
 @app.get('/apartment_device_stats/{apartment_id}')
 async def query_apartment_device_stats(apartment_id, start, end):
@@ -217,6 +221,8 @@ async def query_apartment_device_stats(apartment_id, start, end):
 async def query_all_device_stats(start, end):
     return get_apartment_device_stats('all', start, end)
 
+# min/max consumption for a specific device
+
 @app.get('/smallest_apartment_device_consumption')
 async def query_smallest_apartment_device_consumption(device_name, start, end):
     return get_ordered_apartment_device_consumption(device_name, start, end, 'asc')
@@ -224,6 +230,8 @@ async def query_smallest_apartment_device_consumption(device_name, start, end):
 @app.get('/largest_apartment_device_consumption')
 async def query_largest_apartment_device_consumption(device_name, start, end):
     return get_ordered_apartment_device_consumption(device_name, start, end, 'desc')
+
+# min/max consumption for all devices
 
 @app.get('/smallest_apartment_total_consumption')
 async def query_smallest_apartment_total_consumption(start, end):
