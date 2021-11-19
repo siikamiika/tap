@@ -117,28 +117,6 @@ def populate_db():
     db.commit()
     return db
 
-def get_all_stats(start_datetime, end_datetime):
-    return db.select(
-        '''
-        select
-            count(*) as measurement_count,
-            sum(m.consumption) as total_consumption,
-            avg(m.temp) as average_temperature,
-            sum(m.flow_time) as total_flow_time,
-            sum(m.power_consumption) as total_power_consumption
-        from measurements m
-        join devices d on m.device_id = d.id
-        join apartments a on d.apartment_id = a.id
-        where m.timestamp >= ?
-            and m.timestamp < ?
-        ''',
-        [
-            start_datetime,
-            end_datetime
-        ]
-    )[0]
-
-
 def get_apartment_stats(apartment_id, start_datetime, end_datetime):
     return db.select(
         '''
@@ -151,11 +129,12 @@ def get_apartment_stats(apartment_id, start_datetime, end_datetime):
         from measurements m
         join devices d on m.device_id = d.id
         join apartments a on d.apartment_id = a.id
-        where a.id = ?
+        where (? or a.id = ?)
             and m.timestamp >= ?
             and m.timestamp < ?
         ''',
         [
+            apartment_id == 'all',
             apartment_id,
             start_datetime,
             end_datetime
@@ -175,17 +154,49 @@ def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
         from measurements m
         join devices d on m.device_id = d.id
         join apartments a on d.apartment_id = a.id
-        where a.id = ?
+        where (? or a.id = ?)
             and m.timestamp >= ?
             and m.timestamp < ?
         group by d.name
         ''',
         [
+            apartment_id == 'all',
             apartment_id,
             start_datetime,
             end_datetime
         ]
     )
+
+def get_ordered_apartment_device_consumption(device_name, start_datetime, end_datetime, order):
+    if order not in ['asc', 'desc']:
+        raise Exception('Invalid order')
+    return db.select(
+        f'''
+        select
+            a.id as apartment_id,
+            group_concat(distinct d.name) as device_name,
+            count(*) as measurement_count,
+            sum(m.consumption) as total_consumption,
+            avg(m.temp) as average_temperature,
+            sum(m.flow_time) as total_flow_time,
+            sum(m.power_consumption) as total_power_consumption
+        from measurements m
+        join devices d on m.device_id = d.id
+        join apartments a on d.apartment_id = a.id
+        where (? or d.name = ?)
+            and m.timestamp >= ?
+            and m.timestamp < ?
+        group by a.id
+        order by total_consumption {order}
+        limit 1
+        ''',
+        [
+            device_name == 'all',
+            device_name,
+            start_datetime,
+            end_datetime
+        ]
+    )[0]
 
 db = populate_db()
 app = fastapi.FastAPI()
@@ -196,8 +207,28 @@ async def query_apartment_stats(apartment_id, start, end):
 
 @app.get('/all_stats')
 async def query_all_stats(start, end):
-    return get_all_stats(start, end)
+    return get_apartment_stats('all', start, end)
 
 @app.get('/apartment_device_stats/{apartment_id}')
 async def query_apartment_device_stats(apartment_id, start, end):
     return get_apartment_device_stats(apartment_id, start, end)
+
+@app.get('/all_device_stats')
+async def query_all_device_stats(start, end):
+    return get_apartment_device_stats('all', start, end)
+
+@app.get('/smallest_apartment_device_consumption')
+async def query_smallest_apartment_device_consumption(device_name, start, end):
+    return get_ordered_apartment_device_consumption(device_name, start, end, 'asc')
+
+@app.get('/largest_apartment_device_consumption')
+async def query_largest_apartment_device_consumption(device_name, start, end):
+    return get_ordered_apartment_device_consumption(device_name, start, end, 'desc')
+
+@app.get('/smallest_apartment_total_consumption')
+async def query_smallest_apartment_total_consumption(start, end):
+    return get_ordered_apartment_device_consumption('all', start, end, 'asc')
+
+@app.get('/largest_apartment_total_consumption')
+async def query_largest_apartment_total_consumption(start, end):
+    return get_ordered_apartment_device_consumption('all', start, end, 'desc')
