@@ -29,7 +29,7 @@ class DB:
     def commit(self):
         self._con.commit()
 
-    def _get_db_connection(self) -> sqlite3.Connection:
+    def _get_db_connection(self):
         path = self._db_path
         if not os.path.isfile(path):
             fd = os.open(path, os.O_CREAT, mode=0o600)
@@ -123,13 +123,13 @@ def get_all_stats(start_datetime, end_datetime):
         select
             count(*) as measurement_count,
             sum(m.consumption),
-            sum(m.temp),
+            avg(m.temp),
             sum(m.flow_time),
             sum(m.power_consumption)
         from measurements m
         join devices d on m.device_id = d.id
         join apartments a on d.apartment_id = a.id
-        where m.timestamp > ?
+        where m.timestamp >= ?
             and m.timestamp < ?
         ''',
         [
@@ -145,14 +145,14 @@ def get_apartment_stats(apartment_id, start_datetime, end_datetime):
         select
             count(*) as measurement_count,
             sum(m.consumption),
-            sum(m.temp),
+            avg(m.temp),
             sum(m.flow_time),
             sum(m.power_consumption)
         from measurements m
         join devices d on m.device_id = d.id
         join apartments a on d.apartment_id = a.id
         where a.id = ?
-            and m.timestamp > ?
+            and m.timestamp >= ?
             and m.timestamp < ?
         ''',
         [
@@ -169,14 +169,14 @@ def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
             d.name as device_name,
             count(*) as measurement_count,
             sum(m.consumption),
-            sum(m.temp),
+            avg(m.temp),
             sum(m.flow_time),
             sum(m.power_consumption)
         from measurements m
         join devices d on m.device_id = d.id
         join apartments a on d.apartment_id = a.id
         where a.id = ?
-            and m.timestamp > ?
+            and m.timestamp >= ?
             and m.timestamp < ?
         group by d.name
         ''',
@@ -186,7 +186,6 @@ def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
             end_datetime
         ]
     )
-
 
 db = populate_db()
 app = fastapi.FastAPI()
