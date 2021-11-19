@@ -122,10 +122,10 @@ def get_all_stats(start_datetime, end_datetime):
         '''
         select
             count(*) as measurement_count,
-            sum(m.consumption),
-            avg(m.temp),
-            sum(m.flow_time),
-            sum(m.power_consumption)
+            sum(m.consumption) as total_consumption,
+            avg(m.temp) as average_temperature,
+            sum(m.flow_time) as total_flow_time,
+            sum(m.power_consumption) as total_power_consumption
         from measurements m
         join devices d on m.device_id = d.id
         join apartments a on d.apartment_id = a.id
@@ -144,10 +144,10 @@ def get_apartment_stats(apartment_id, start_datetime, end_datetime):
         '''
         select
             count(*) as measurement_count,
-            sum(m.consumption),
-            avg(m.temp),
-            sum(m.flow_time),
-            sum(m.power_consumption)
+            sum(m.consumption) as total_consumption,
+            avg(m.temp) as average_temperature,
+            sum(m.flow_time) as total_flow_time,
+            sum(m.power_consumption) as total_power_consumption
         from measurements m
         join devices d on m.device_id = d.id
         join apartments a on d.apartment_id = a.id
@@ -168,10 +168,10 @@ def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
         select
             d.name as device_name,
             count(*) as measurement_count,
-            sum(m.consumption),
-            avg(m.temp),
-            sum(m.flow_time),
-            sum(m.power_consumption)
+            sum(m.consumption) as total_consumption,
+            avg(m.temp) as average_temperature,
+            sum(m.flow_time) as total_flow_time,
+            sum(m.power_consumption) as total_power_consumption
         from measurements m
         join devices d on m.device_id = d.id
         join apartments a on d.apartment_id = a.id
