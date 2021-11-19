@@ -5,10 +5,13 @@ import sqlite3
 import os
 import contextlib
 
+import fastapi
+
 class DB:
     def __init__(self, db_path):
         self._db_path = db_path
         self._con = self._get_db_connection()
+        self._con.row_factory = sqlite3.Row
         self._cur = self._con.cursor()
         self._ensure_tables()
 
@@ -112,23 +115,90 @@ def populate_db():
                     ]
                 )
     db.commit()
+    return db
 
-def get_apartment_measurements(apartment_id):
-    db = DB('app.db')
-    print(db.select(
+def get_all_stats(start_datetime, end_datetime):
+    return db.select(
         '''
-        select count(*)
+        select
+            count(*) as measurement_count,
+            sum(m.consumption),
+            sum(m.temp),
+            sum(m.flow_time),
+            sum(m.power_consumption)
         from measurements m
         join devices d on m.device_id = d.id
         join apartments a on d.apartment_id = a.id
-        where a.id = ?;
+        where m.timestamp > ?
+            and m.timestamp < ?
         ''',
-        [apartment_id]
-    ))
+        [
+            start_datetime,
+            end_datetime
+        ]
+    )[0]
 
-def main():
-    populate_db()
-    get_apartment_measurements(5)
 
-if __name__ == '__main__':
-    main()
+def get_apartment_stats(apartment_id, start_datetime, end_datetime):
+    return db.select(
+        '''
+        select
+            count(*) as measurement_count,
+            sum(m.consumption),
+            sum(m.temp),
+            sum(m.flow_time),
+            sum(m.power_consumption)
+        from measurements m
+        join devices d on m.device_id = d.id
+        join apartments a on d.apartment_id = a.id
+        where a.id = ?
+            and m.timestamp > ?
+            and m.timestamp < ?
+        ''',
+        [
+            apartment_id,
+            start_datetime,
+            end_datetime
+        ]
+    )[0]
+
+def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
+    return db.select(
+        '''
+        select
+            d.name as device_name,
+            count(*) as measurement_count,
+            sum(m.consumption),
+            sum(m.temp),
+            sum(m.flow_time),
+            sum(m.power_consumption)
+        from measurements m
+        join devices d on m.device_id = d.id
+        join apartments a on d.apartment_id = a.id
+        where a.id = ?
+            and m.timestamp > ?
+            and m.timestamp < ?
+        group by d.name
+        ''',
+        [
+            apartment_id,
+            start_datetime,
+            end_datetime
+        ]
+    )
+
+
+db = populate_db()
+app = fastapi.FastAPI()
+
+@app.get('/apartment_stats/{apartment_id}')
+async def query_apartment_stats(apartment_id, start, end):
+    return get_apartment_stats(apartment_id, start, end)
+
+@app.get('/all_stats')
+async def query_all_stats(start, end):
+    return get_all_stats(start, end)
+
+@app.get('/apartment_device_stats/{apartment_id}')
+async def query_apartment_device_stats(apartment_id, start, end):
+    return get_apartment_device_stats(apartment_id, start, end)
