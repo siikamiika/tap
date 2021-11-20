@@ -1,11 +1,31 @@
-<html>
+<!DOCTYPE html>
+<html lang=en>
     <head>
-        <link rel="stylesheet" type="text/css" href="static/styles.css">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=1280, initial-scale=1">
+        <title>Tap</title>
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-        <script src="https://d3js.org/d3.v7.min.js"></script>
-        <script src="static/script.js"></script>
+        <link rel="stylesheet" type="text/css" href="static/styles.css">
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <div class="flex items-center h-screen flex-col w-screen-sm max-w-screen-sm container mx-auto">
+            <h1>Stats compared to other tenants</h1>
+            <div class="w-full flex-col">
+                <h2>Total</h2>
+                <canvas id="consumptionTotal" class="chart"></canvas>
+            </div>
+            <div class="flex flex-row w-full mt-12">
+                <div class="flex flex-col w-1/2">
+                    <h2>Faucets & Shower</h2>
+                    <canvas id="consumptionShower" class="chart"></canvas>
+                </div>
+                <div class="flex flex-col w-1/2">
+                    <h2>Appliances</h2>
+                    <canvas id="consumptionAppliances" class="chart"></canvas>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script>
+        <script src="static/script.js"></script>
     </body>
 </html>
