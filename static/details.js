@@ -57,7 +57,7 @@ async function getDatasetValues(query) {
 
 function getDatasetFromValues(values) {
     return [{
-        label: 'Daily consumption',
+        label: 'Daily consumption in liters',
         data: values,
         backgroundColor: [
             'red',
