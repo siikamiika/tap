@@ -218,6 +218,42 @@ def get_ordered_apartment_device_consumption(device_name, start_datetime, end_da
         ]
     )[0]
 
+def get_device_specific_consumption(start_datetime, end_datetime):
+    rows = db.select(
+        f'''
+        with time_interval as (
+            select ((julianday(?) - julianday(?)) * 86400.0) as value
+        )
+        select
+            a.id as apartment_id,
+            d.name as device_name,
+            count(*) as measurement_count,
+            sum(m.consumption) as total_consumption,
+            sum(m.flow_time) as total_flow_time,
+            sum(min(m.flow_time, time_interval.value)) / time_interval.value as flow_percentage,
+            sum(m.power_consumption) as total_power_consumption
+        from measurements m, time_interval
+        join devices d on m.device_id = d.id
+        join apartments a on d.apartment_id = a.id
+        where m.timestamp >= ?
+            and m.timestamp < ?
+        group by a.id, d.id
+        order by flow_percentage desc
+        ''',
+        [
+            end_datetime,
+            start_datetime,
+            start_datetime,
+            end_datetime,
+        ]
+    )
+    data = {}
+    for row in rows:
+        if row['apartment_id'] not in data:
+            data[row['apartment_id']] = {}
+        data[row['apartment_id']][row['device_name']] = row
+    return data
+
 db = populate_db()
 app = fastapi.FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
@@ -290,3 +326,9 @@ async def query_smallest_apartment_total_consumption(start, end):
 @app.get('/largest_apartment_total_consumption')
 async def query_largest_apartment_total_consumption(start, end):
     return get_ordered_apartment_device_consumption('all', start, end, 'desc')
+
+# plumber
+
+@app.get('/device_specific_consumption')
+async def query_device_specific_consumption(start, end):
+    return get_device_specific_consumption(start, end)
