@@ -38,12 +38,15 @@ function something(percentageConsumingLess) {
         'rgba(255, 100, 100, 0.4)',
         'rgba(255, 50, 50, 0.4)'
     ]
+
+    const pointerThickness = 0.02
+
     if (0.0 <= percentageConsumingLess && percentageConsumingLess < 1/3) {
         const pos = percentageConsumingLess
         return [
             {color: colors[0],   value: 1/3 - pos},
-            {color: 'red',    value: 0.01},
-            {color: colors[0],   value: 1/3 - (1/3 - pos) - 0.01},
+            {color: 'red',    value: pointerThickness},
+            {color: colors[0],   value: 1/3 - (1/3 - pos) - pointerThickness},
             {color: colors[1],  value: 1/3},
             {color: colors[2], value: 1/3},
         ]
@@ -52,8 +55,8 @@ function something(percentageConsumingLess) {
         return [
             {color: colors[0],   value: 1/3},
             {color: colors[1],  value: 1/3 - pos},
-            {color: 'red',    value: 0.01},
-            {color: colors[1],  value: 1/3 - (1/3 - pos) - 0.01},
+            {color: 'red',    value: pointerThickness},
+            {color: colors[1],  value: 1/3 - (1/3 - pos) - pointerThickness},
             {color: colors[2], value: 1/3},
         ]
     } else if (2/3 <= percentageConsumingLess && percentageConsumingLess <= 1) {
@@ -62,7 +65,7 @@ function something(percentageConsumingLess) {
             {color: colors[0],   value: 1/3},
             {color: colors[1],  value: 1/3},
             {color: colors[2], value: 1/3 - pos},
-            {color: 'red',    value: 0.01},
+            {color: 'red',    value: pointerThickness},
             {color: colors[2], value: 1/3 - (1/3 - pos) - 0.1},
         ]
     }
@@ -84,6 +87,7 @@ function instantiateChart(id, percentageConsumingLess) {
         },
         options: {
             rotation: 180,
+            borderWidth: 0,
             events: []
         }
     })
