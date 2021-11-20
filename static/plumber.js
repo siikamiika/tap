@@ -1,15 +1,21 @@
 async function getData() {
-    const response = await fetch('/device_specific_consumption?start=2020-02-02%2009:00:00&end=2020-02-02%2012:00:00')
+    const now = new Date();
+    const startTime = `2020-${(''+(now.getMonth()+1)).padStart(2, '0')}-${(''+now.getDate()).padStart(2, '0')}`;
+    const inOneWeek = new Date(now.getTime() + 24*60*60*7*1000);
+    const endTime = `2020-${(''+(inOneWeek.getMonth()+1)).padStart(2, '0')}-${(''+inOneWeek.getDate()).padStart(2, '0')}`;
+    const response = await fetch(`/device_specific_consumption?start=${startTime}&end=${endTime}`)
     const body = await response.json()
     return body
 }
 
 function renderTableRow(columns, isHeader=false) {
     const tr = document.createElement('tr');
+    let counter = 0;
     for (const val of columns) {
         const col = document.createElement(isHeader ? 'th' : 'td');
         col.textContent = val;
         tr.appendChild(col);
+        counter++;
     }
     return tr;
 }
@@ -32,8 +38,8 @@ function renderTable(data) {
             cols.map((colName) => {
                 if (colName === 'Apartment') { return apartmentId; }
                 const dev = devices[colName];
-                if (dev) { return `${Math.round(dev.flow_percentage * 100)}%`; /* TODO other stats */ }
-                return '0%';
+                if (dev) { return `${Math.round(dev.flow_percentage * 1000) / 10} %`; /* TODO other stats */ }
+                return '0 %';
             })
         ));
     }

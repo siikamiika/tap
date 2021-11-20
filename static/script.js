@@ -1,5 +1,9 @@
 async function getData() {
-    const response = await fetch('/stats/1?start=2020-01-01&end=2020-01-08')
+    const now = new Date();
+    const startTime = `2020-${(''+(now.getMonth()+1)).padStart(2, '0')}-${(''+now.getDate()).padStart(2, '0')}`;
+    const inOneWeek = new Date(now.getTime() + 24*60*60*7*1000);
+    const endTime = `2020-${(''+(inOneWeek.getMonth()+1)).padStart(2, '0')}-${(''+inOneWeek.getDate()).padStart(2, '0')}`;
+    const response = await fetch(`/stats/3?start=${startTime}&end=${endTime}`)
     const body = await response.json()
     return body
 }
