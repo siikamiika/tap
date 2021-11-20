@@ -148,35 +148,38 @@ def get_apartment_stats(apartment_id, start_datetime, end_datetime):
 
 @functools.lru_cache(maxsize=20)
 def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
-    return db.select(
-        '''
-        select
-            case
-                when d.name in ('Hydractiva_shower', 'Kitchen_optima_faucet', 'Optima_faucet') then 'manual'
-                when d.name in ('Washing_machine', 'Dishwasher') then 'automatic'
-                else null
-            end as device_name,
-            count(*) as measurement_count,
-            avg(a.people) as _average_people,
-            sum(m.consumption) / avg(a.people) as total_consumption,
-            avg(m.temp) as average_temperature,
-            sum(m.flow_time) / avg(a.people) as total_flow_time,
-            sum(m.power_consumption) / avg(a.people) as total_power_consumption
-        from measurements m
-        join devices d on m.device_id = d.id
-        join apartments a on d.apartment_id = a.id
-        where (? or a.id = ?)
-            and m.timestamp >= ?
-            and m.timestamp < ?
-        group by device_name
-        ''',
-        [
-            apartment_id == 'all',
-            apartment_id,
-            start_datetime,
-            end_datetime
-        ]
-    )
+    return {
+        row['device_name']: row
+        for row in db.select(
+            '''
+            select
+                case
+                    when d.name in ('Hydractiva_shower', 'Kitchen_optima_faucet', 'Optima_faucet') then 'manual'
+                    when d.name in ('Washing_machine', 'Dishwasher') then 'automatic'
+                    else null
+                end as device_name,
+                count(*) as measurement_count,
+                avg(a.people) as _average_people,
+                sum(m.consumption) / avg(a.people) as total_consumption,
+                avg(m.temp) as average_temperature,
+                sum(m.flow_time) / avg(a.people) as total_flow_time,
+                sum(m.power_consumption) / avg(a.people) as total_power_consumption
+            from measurements m
+            join devices d on m.device_id = d.id
+            join apartments a on d.apartment_id = a.id
+            where (? or a.id = ?)
+                and m.timestamp >= ?
+                and m.timestamp < ?
+            group by device_name
+            ''',
+            [
+                apartment_id == 'all',
+                apartment_id,
+                start_datetime,
+                end_datetime
+            ]
+        )
+    }
 
 @functools.lru_cache(maxsize=20)
 def get_ordered_apartment_device_consumption(device_name, start_datetime, end_datetime, order):
