@@ -43,7 +43,7 @@ function getDataset(percentageConsumingLess) {
     }
 }
 
-function instantiateChart(id, percentageConsumingLess) {
+function instantiateChart(id, percentageConsumingLess, actualConsumption) {
     const ctx = document.getElementById(id).getContext('2d')
 
     const dataset = getDataset(percentageConsumingLess)
@@ -59,7 +59,13 @@ function instantiateChart(id, percentageConsumingLess) {
         options: {
             rotation: 180,
             borderWidth: 0,
-            events: []
+            events: [],
+            plugins: {
+                title: {
+                    display: true,
+                    text: actualConsumption.toFixed(2) + ' liters',
+                }
+            }
         }
     })
 }
@@ -81,9 +87,9 @@ async function init() {
             - data.smallest_apartment_device_consumption.automatic.total_consumption) /
         (data.largest_apartment_device_consumption.automatic.total_consumption
             - data.smallest_apartment_device_consumption.automatic.total_consumption)
-    instantiateChart('consumptionTotal', total)
-    instantiateChart('consumptionShower', manual)
-    instantiateChart('consumptionAppliances', automatic)
+    instantiateChart('consumptionTotal', total, data.apartment_stats.total_consumption)
+    instantiateChart('consumptionShower', manual, data.apartment_device_stats.manual.total_consumption)
+    instantiateChart('consumptionAppliances', automatic, data.apartment_device_stats.automatic.total_consumption)
 }
 
 init()
