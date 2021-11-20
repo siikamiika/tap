@@ -24,7 +24,8 @@ function instantiateChart(datasets) {
             datasets
         },
         options: {
-            events: []
+            events: [],
+            maintainAspectRatio: false,
         }
     })
 }
