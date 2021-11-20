@@ -263,8 +263,12 @@ async def main():
     return FileResponse('static/index.html')
 
 @app.get('/details')
-async def main():
+async def details():
     return FileResponse('static/details.html')
+
+@app.get('/plumber')
+async def plumber():
+    return FileResponse('static/plumber.html')
 
 @app.get('/favicon.ico')
 async def favicon():
