@@ -33,7 +33,7 @@ function renderTable(data) {
                 if (colName === 'Apartment') { return apartmentId; }
                 const dev = devices[colName];
                 if (dev) { return `${Math.round(dev.flow_percentage * 100)}%`; /* TODO other stats */ }
-                return '';
+                return '0%';
             })
         ));
         console.log({apartmentId, devices});
