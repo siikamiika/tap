@@ -4,6 +4,7 @@ import json
 import sqlite3
 import os
 import contextlib
+import functools
 
 import fastapi
 from fastapi.staticfiles import StaticFiles
@@ -119,6 +120,7 @@ def populate_db():
     db.commit()
     return db
 
+@functools.lru_cache(maxsize=20)
 def get_apartment_stats(apartment_id, start_datetime, end_datetime):
     return db.select(
         '''
@@ -144,6 +146,7 @@ def get_apartment_stats(apartment_id, start_datetime, end_datetime):
         ]
     )[0]
 
+@functools.lru_cache(maxsize=20)
 def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
     return db.select(
         '''
@@ -171,6 +174,7 @@ def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
         ]
     )
 
+@functools.lru_cache(maxsize=20)
 def get_ordered_apartment_device_consumption(device_name, start_datetime, end_datetime, order):
     if order not in ['asc', 'desc']:
         raise Exception('Invalid order')
@@ -216,6 +220,27 @@ async def favicon():
     return FileResponse('static/favicon.ico')
 
 # combined stats for all devices
+
+# everything in one request
+@app.get('/stats/{apartment_id}')
+async def query_stats(apartment_id, start, end):
+    device_names = [d['name'] for d in db.select('select distinct name as name from devices')]
+    return {
+        'apartment_stats': get_apartment_stats(apartment_id, start, end),
+        'all_stats': get_apartment_stats('all', start, end),
+        'apartment_device_stats': get_apartment_device_stats(apartment_id, start, end),
+        'all_device_stats': get_apartment_device_stats('all', start, end),
+        'smallest_apartment_device_consumption': {
+            device_name: get_ordered_apartment_device_consumption(device_name, start, end, 'asc')
+            for device_name in device_names
+        },
+        'largest_apartment_device_consumption': {
+            device_name: get_ordered_apartment_device_consumption(device_name, start, end, 'desc')
+            for device_name in device_names
+        },
+        'smallest_apartment_total_consumption':  get_ordered_apartment_device_consumption('all', start, end, 'asc'),
+        'largest_apartment_total_consumption': get_ordered_apartment_device_consumption('all', start, end, 'desc'),
+    }
 
 @app.get('/apartment_stats/{apartment_id}')
 async def query_apartment_stats(apartment_id, start, end):
