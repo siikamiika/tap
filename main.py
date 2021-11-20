@@ -6,6 +6,8 @@ import os
 import contextlib
 
 import fastapi
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 class DB:
     def __init__(self, db_path):
@@ -200,6 +202,15 @@ def get_ordered_apartment_device_consumption(device_name, start_datetime, end_da
 
 db = populate_db()
 app = fastapi.FastAPI()
+app.mount('/static', StaticFiles(directory='static'), name='static')
+
+@app.get('/')
+async def main():
+    return FileResponse('static/index.html')
+
+@app.get('/favicon.ico')
+async def favicon():
+    return FileResponse('static/favicon.ico')
 
 # combined stats for all devices
 
