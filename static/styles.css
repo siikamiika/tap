@@ -44,7 +44,9 @@ td {
 }
 
 header {
-    background-color: rgba(255, 50, 50, 0.4);
+    background-color: white;
+    z-index: 10;
+    box-shadow: black 0px 0px 2px;
     padding: 8px 16px;
     display: flex;
     flex-direction: row;
