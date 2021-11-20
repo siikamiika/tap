@@ -1,6 +1,11 @@
 const urlParams = new URLSearchParams(window.location.search)
 const query = urlParams.get('q')
 
+let h1Prefix = 'Total'
+if (query === 'manual') h1Prefix = 'Shower and faucet'
+if (query === 'automatic') h1Prefix = 'Appliance'
+document.getElementsByTagName('h1')[0].innerText = `${h1Prefix} consumption details 💧`
+
 function instantiateChart(datasets) {
     const ctx = document.getElementById('chart').getContext('2d')
     const dayInMilliseconds = 24 * 60 * 60 * 1000
