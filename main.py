@@ -151,7 +151,11 @@ def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
     return db.select(
         '''
         select
-            d.name as device_name,
+            case
+                when d.name in ('Hydractiva_shower', 'Kitchen_optima_faucet', 'Optima_faucet') then 'manual'
+                when d.name in ('Washing_machine', 'Dishwasher') then 'automatic'
+                else null
+            end as device_name,
             count(*) as measurement_count,
             avg(a.people) as _average_people,
             sum(m.consumption) / avg(a.people) as total_consumption,
@@ -164,7 +168,7 @@ def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
         where (? or a.id = ?)
             and m.timestamp >= ?
             and m.timestamp < ?
-        group by d.name
+        group by device_name
         ''',
         [
             apartment_id == 'all',
@@ -182,7 +186,11 @@ def get_ordered_apartment_device_consumption(device_name, start_datetime, end_da
         f'''
         select
             a.id as apartment_id,
-            group_concat(distinct d.name) as device_name,
+            case
+                when d.name in ('Hydractiva_shower', 'Kitchen_optima_faucet', 'Optima_faucet') then 'manual'
+                when d.name in ('Washing_machine', 'Dishwasher') then 'automatic'
+                else null
+            end as _device_name,
             avg(a.people) as _average_people,
             count(*) as measurement_count,
             sum(m.consumption) / avg(a.people) as total_consumption,
@@ -192,7 +200,7 @@ def get_ordered_apartment_device_consumption(device_name, start_datetime, end_da
         from measurements m
         join devices d on m.device_id = d.id
         join apartments a on d.apartment_id = a.id
-        where (? or d.name = ?)
+        where (? or _device_name = ?)
             and m.timestamp >= ?
             and m.timestamp < ?
         group by a.id
@@ -224,7 +232,7 @@ async def favicon():
 # everything in one request
 @app.get('/stats/{apartment_id}')
 async def query_stats(apartment_id, start, end):
-    device_names = [d['name'] for d in db.select('select distinct name as name from devices')]
+    device_names = ['automatic', 'manual']
     return {
         'apartment_stats': get_apartment_stats(apartment_id, start, end),
         'all_stats': get_apartment_stats('all', start, end),
