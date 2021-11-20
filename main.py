@@ -124,6 +124,7 @@ def get_apartment_stats(apartment_id, start_datetime, end_datetime):
         '''
         select
             count(*) as measurement_count,
+            avg(a.people) as _average_people,
             sum(m.consumption) / avg(a.people) as total_consumption,
             avg(m.temp) as average_temperature,
             sum(m.flow_time) / avg(a.people) as total_flow_time,
@@ -149,6 +150,7 @@ def get_apartment_device_stats(apartment_id, start_datetime, end_datetime):
         select
             d.name as device_name,
             count(*) as measurement_count,
+            avg(a.people) as _average_people,
             sum(m.consumption) / avg(a.people) as total_consumption,
             avg(m.temp) as average_temperature,
             sum(m.flow_time) / avg(a.people) as total_flow_time,
@@ -177,6 +179,7 @@ def get_ordered_apartment_device_consumption(device_name, start_datetime, end_da
         select
             a.id as apartment_id,
             group_concat(distinct d.name) as device_name,
+            avg(a.people) as _average_people,
             count(*) as measurement_count,
             sum(m.consumption) / avg(a.people) as total_consumption,
             avg(m.temp) as average_temperature,
