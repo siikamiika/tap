@@ -1,0 +1,3 @@
+- plumber's view
+    - table view of all apartments
+    - 6h of continuous consumption in one place: alert
