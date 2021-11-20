@@ -22,3 +22,7 @@ h2 {
     text-align: center;
     height: 3em;
 }
+
+table, th, td {
+    border: 1px solid black;
+}

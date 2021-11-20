@@ -1,5 +1,5 @@
 async function getData() {
-    const response = await fetch('stats/3?start=2020-01-01&end=2020-01-08')
+    const response = await fetch('/stats/3?start=2020-01-01&end=2020-01-08')
     const body = await response.json()
     return body
 }
