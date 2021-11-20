@@ -4,34 +4,6 @@ async function getData() {
     return body
 }
 
-// function instantiateChart(id, percentageConsumingLess) {
-//     const ctx = document.getElementById(id).getContext('2d')
-
-//     const firstColor = `rgb(${percentageConsumingLess*100}, ${percentageConsumingLess*255}, ${(1-percentageConsumingLess)*255})`
-//     const lastColor = `rgb(200, ${(1-percentageConsumingLess)*220}, ${(1-percentageConsumingLess)*200})`
-
-//     new Chart(ctx, {
-//         type: 'doughnut',
-//         data: {
-//             datasets: [{
-//                 data: [percentageConsumingLess, 0.01, 1 - percentageConsumingLess],
-//                 backgroundColor: [
-//                     firstColor,
-//                     'red',
-//                     lastColor
-//                 ]
-//             }]
-//         },
-//         options: {
-//             rotation: 180,
-//             borderColor: 'red',
-//             events: []
-//         }
-//     })
-// }
-
-
-
 function something(percentageConsumingLess) {
     const colors = [
         'rgba(255, 200, 200, 0.4)',
