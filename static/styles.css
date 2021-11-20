@@ -11,6 +11,8 @@ html, body {
 body {
     color: #4d4d4d;
     font-family: 'FiraSans';
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
@@ -30,4 +32,35 @@ table, th, td {
 
 td {
     text-align: center;
+}
+
+#maintenance-button {
+    background-color: rgba(255, 200, 200, 0.4);
+    margin: 0;
+    color: white;
+    background-color: red;
+    border-radius: 4px;
+    padding: 8px 16px;
+}
+
+header {
+    background-color: rgba(255, 50, 50, 0.4);
+    padding: 8px 16px;
+    display: flex;
+    flex-direction: row;
+}
+
+header > h1 {
+    text-align: center;
+    left: 0;
+    right: 0;
+    top: 4px;
+    flex: 1;
+    color: red;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+button {
+    z-index: 100;
 }

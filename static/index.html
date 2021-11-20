@@ -8,6 +8,13 @@
         <link rel="stylesheet" type="text/css" href="/static/styles.css">
     </head>
     <body class="bg-gray-100">
+        <header>
+            <div class="flex-1">
+                <button onclick="window.location.href='/plumber'" id="maintenance-button">Maintenance view</button>
+            </div>
+            <h1>Tap</h1>
+            <div class="flex-1"></div>
+        </header>
         <div class="px-16 pb-16 bg-white items-center flex-col w-screen-sm max-w-screen-sm container mx-auto">
             <h1 class="mb-8 bg-red-600 rounded-b-xl text-white p-2 text-center">Weekly water consumption stats compared to other tenants 💧</h1>
             <div class="w-full flex-col" onclick="window.location.href='details'">
