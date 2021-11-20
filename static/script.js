@@ -1,10 +1,10 @@
 async function getData() {
-    const response = await fetch('/stats/3?start=2020-01-01&end=2020-01-08')
+    const response = await fetch('/stats/1?start=2020-01-01&end=2020-01-08')
     const body = await response.json()
     return body
 }
 
-function something(percentageConsumingLess) {
+function getDataset(percentageConsumingLess) {
     const colors = [
         'rgba(255, 200, 200, 0.4)',
         'rgba(255, 100, 100, 0.4)',
@@ -46,9 +46,8 @@ function something(percentageConsumingLess) {
 function instantiateChart(id, percentageConsumingLess) {
     const ctx = document.getElementById(id).getContext('2d')
 
-    const dataset = something(percentageConsumingLess)
+    const dataset = getDataset(percentageConsumingLess)
 
-    console.log(dataset.map(item => item.color))
     new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -67,7 +66,6 @@ function instantiateChart(id, percentageConsumingLess) {
 
 async function init() {
     const data = await getData()
-    console.log(data)
     const total = 
         (data.apartment_stats.total_consumption
             - data.smallest_apartment_total_consumption.total_consumption) /

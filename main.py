@@ -262,6 +262,10 @@ app.mount('/static', StaticFiles(directory='static'), name='static')
 async def main():
     return FileResponse('static/index.html')
 
+@app.get('/details')
+async def main():
+    return FileResponse('static/details.html')
+
 @app.get('/favicon.ico')
 async def favicon():
     return FileResponse('static/favicon.ico')

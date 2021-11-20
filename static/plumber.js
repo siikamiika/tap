@@ -36,13 +36,11 @@ function renderTable(data) {
                 return '0%';
             })
         ));
-        console.log({apartmentId, devices});
     }
 }
 
 async function init() {
     const data = await getData()
-    console.log(data)
     renderTable(data);
 }
 

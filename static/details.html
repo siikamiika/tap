@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Tap</title>
+        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    </head>
+    <body class="bg-gray-100">
+        <div class="px-16 pb-16 bg-white items-center flex-col w-screen-sm max-w-screen-sm container mx-auto">
+            <h1 class="mb-8 bg-red-600 rounded-b-xl text-white p-2 text-center">Consumption details 💧</h1>
+            <div class="w-full flex-col">
+                <!-- <h2>Total</h2> -->
+                <canvas id="chart"></canvas>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script>
+        <script src="/static/details.js"></script>
+    </body>
+</html>
