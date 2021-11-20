@@ -3,8 +3,12 @@
     src: url(Fira_Sans/FiraSans-Regular.ttf);
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    background-color: white;
     color: #4d4d4d;
     font-family: 'FiraSans';
 }
@@ -14,7 +18,7 @@ h1 {
 }
 
 h2 {
-    font-size: 2em;
+    font-size: 1.5em;
     text-align: center;
-    height: 100px;
+    height: 3em;
 }
