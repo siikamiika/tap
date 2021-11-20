@@ -229,6 +229,7 @@ def get_device_specific_consumption(start_datetime, end_datetime):
             d.name as device_name,
             count(*) as measurement_count,
             sum(m.consumption) as total_consumption,
+            avg(m.temp) as average_temperature,
             sum(m.flow_time) as total_flow_time,
             sum(min(m.flow_time, time_interval.value)) / time_interval.value as flow_percentage,
             sum(m.power_consumption) as total_power_consumption
@@ -238,7 +239,6 @@ def get_device_specific_consumption(start_datetime, end_datetime):
         where m.timestamp >= ?
             and m.timestamp < ?
         group by a.id, d.id
-        order by flow_percentage desc
         ''',
         [
             end_datetime,

@@ -16,29 +16,29 @@ function something(percentageConsumingLess) {
     if (0.0 <= percentageConsumingLess && percentageConsumingLess < 1/3) {
         const pos = percentageConsumingLess
         return [
-            {color: colors[0],   value: 1/3 - pos},
-            {color: 'red',    value: pointerThickness},
-            {color: colors[0],   value: 1/3 - (1/3 - pos) - pointerThickness},
-            {color: colors[1],  value: 1/3},
+            {color: colors[0], value: pos},
+            {color: 'red',     value: pointerThickness},
+            {color: colors[0], value: 1/3 - pos - pointerThickness},
+            {color: colors[1], value: 1/3},
             {color: colors[2], value: 1/3},
         ]
     } else if (1/3 <= percentageConsumingLess && percentageConsumingLess < 2/3) {
         const pos = percentageConsumingLess - 1/3
         return [
-            {color: colors[0],   value: 1/3},
-            {color: colors[1],  value: 1/3 - pos},
-            {color: 'red',    value: pointerThickness},
-            {color: colors[1],  value: 1/3 - (1/3 - pos) - pointerThickness},
+            {color: colors[0], value: 1/3},
+            {color: colors[1], value: pos},
+            {color: 'red',     value: pointerThickness},
+            {color: colors[1], value: 1/3 - pos - pointerThickness},
             {color: colors[2], value: 1/3},
         ]
     } else if (2/3 <= percentageConsumingLess && percentageConsumingLess <= 1) {
         const pos = percentageConsumingLess - 2/3
         return [
-            {color: colors[0],   value: 1/3},
-            {color: colors[1],  value: 1/3},
-            {color: colors[2], value: 1/3 - pos},
-            {color: 'red',    value: pointerThickness},
-            {color: colors[2], value: 1/3 - (1/3 - pos) - 0.1},
+            {color: colors[0], value: 1/3},
+            {color: colors[1], value: 1/3},
+            {color: colors[2], value: pos},
+            {color: 'red',     value: pointerThickness},
+            {color: colors[2], value: 1/3 - pos - 0.1},
         ]
     }
 }
