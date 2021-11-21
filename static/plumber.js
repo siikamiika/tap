@@ -1,8 +1,8 @@
 async function getData() {
     const now = new Date();
-    const startTime = `2020-${(''+(now.getMonth()+1)).padStart(2, '0')}-${(''+now.getDate()).padStart(2, '0')}`;
-    const inOneWeek = new Date(now.getTime() + 24*60*60*7*1000);
-    const endTime = `2020-${(''+(inOneWeek.getMonth()+1)).padStart(2, '0')}-${(''+inOneWeek.getDate()).padStart(2, '0')}`;
+    const endTime = `2020-${(''+(now.getMonth()+1)).padStart(2, '0')}-${(''+now.getDate()).padStart(2, '0')}`;
+    const oneWeekAgo = new Date(now.getTime() - 24*60*60*7*1000);
+    const startTime = `2020-${(''+(oneWeekAgo.getMonth()+1)).padStart(2, '0')}-${(''+oneWeekAgo.getDate()).padStart(2, '0')}`;
     const response = await fetch(`/device_specific_consumption?start=${startTime}&end=${endTime}`)
     const body = await response.json()
     return body
