@@ -4,7 +4,7 @@ const query = urlParams.get('q')
 let h1Prefix = 'Total'
 if (query === 'manual') h1Prefix = 'Shower and faucet'
 if (query === 'automatic') h1Prefix = 'Appliance'
-document.getElementsByTagName('h1')[0].innerText = `${h1Prefix} consumption details 💧`
+document.getElementsByTagName('h1')[1].innerText = `${h1Prefix} consumption details 💧`
 
 function instantiateChart(datasets) {
     const ctx = document.getElementById('chart').getContext('2d')
@@ -12,10 +12,10 @@ function instantiateChart(datasets) {
     const currentDate = new Date(new Date())
 
     const labels = [...Array(7).keys()]
-        .map(x => x - 1)
-        .reverse()
-        .map(x => new Date(currentDate.getTime() + x * dayInMilliseconds))
+        .map(x => x + 1)
+        .map(x => new Date(currentDate.getTime() - x * dayInMilliseconds))
         .map(x => x.toLocaleString('en-US', {weekday: 'long'}))
+        .reverse()
 
     new Chart(ctx, {
         type: 'bar',
