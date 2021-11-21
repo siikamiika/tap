@@ -70,3 +70,13 @@ button {
 button:hover {
     opacity: 0.6;
 }
+
+.clickable {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.clickable:hover {
+    background-color: rgba(255, 100, 100, 0.1);
+}

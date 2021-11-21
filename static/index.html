@@ -17,16 +17,16 @@
         </header>
         <div class="px-16 pb-16 bg-white items-center flex-col w-screen-sm max-w-screen-sm container mx-auto">
             <h1 class="mb-8 bg-red-600 rounded-b-xl text-white p-2 text-center">Weekly water consumption stats compared to other tenants 💧</h1>
-            <div class="w-full flex-col" onclick="window.location.href='details'">
+            <div class="w-full flex-col clickable" onclick="window.location.href='details'">
                 <h2>Total</h2>
                 <canvas id="consumptionTotal"></canvas>
             </div>
             <div class="flex flex-row w-full mt-12">
-                <div class="flex flex-col w-1/2" onclick="window.location.href='details?q=manual'">
+                <div class="flex flex-col w-1/2 clickable" onclick="window.location.href='details?q=manual'">
                     <h2>Faucets & Shower</h2>
                     <canvas id="consumptionShower"></canvas>
                 </div>
-                <div class="flex flex-col w-1/2" onclick="window.location.href='details?q=automatic'">
+                <div class="flex flex-col w-1/2 clickable" onclick="window.location.href='details?q=automatic'">
                     <h2>Appliances</h2>
                     <canvas id="consumptionAppliances"></canvas>
                 </div>
